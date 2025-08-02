@@ -4,69 +4,104 @@ import { baseUrl, getRequest } from '../utils/services';
 export const useFetchRecipientUser = (chat, user) => {
   const [recipientUser, setRecipientUser] = useState(null);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  //if (!chat || !user?.data?._id) return;
+  useEffect(() => {
+    // Clear previous state when inputs change
+    setRecipientUser(null);
+    setError(null);
+    setIsLoading(false);
 
-  const recipientId = chat.members.find((id) => id !== user?.data?._id);
-  console.log("🎯 Recipient ID:", recipientId);
-
-useEffect(() => {
-
-  const getUser = async () => {
-    if (!recipientId) return null;
-
-    const response = await getRequest(`${baseUrl}/users/${recipientId}`);
-    if (response.error) {
-      setError(response.error);
-    } else {
-      setRecipientUser(response.data);
+    if (!chat || !chat.members || !Array.isArray(chat.members) || !user) {
+      console.log('useFetchRecipientUser: Missing chat, chat.members, or user. Returning early.');
+      return;
     }
-  };
 
-  getUser();
-}, []);
+    const currentUserId = user?.data?._id || user?._id;
+    if (!currentUserId) {
+      console.log('useFetchRecipientUser: currentUserId is null or undefined. User object:', user);
+      return;
+    }
 
+    let recipientMember;
+    recipientMember = chat.members.find((member) => member._id !== currentUserId);
+    if (!recipientMember && chat.members.length === 1 && chat.members[0]._id === currentUserId) {
+      console.warn(
+        'useFetchRecipientUser: Malformed chat found: contains only the current user as a member.'
+      );
+      setError({ message: 'Malformed chat data: Only current user found in members.' });
+      return; // Exit early as we can't determine a recipient
+    }
 
-// useEffect(() => {
-//   if (!chat || !user?.data?._id) return;
+    const recipientId = recipientMember?._id;
 
-//   const currentUserId = user?.data?._id || user?._id;
-//     if (!currentUserId) return;
+    console.log('useFetchRecipientUser Debug:');
+    console.log('  Current User ID:', currentUserId);
+    console.log('  Chat Members (full objects):', chat.members);
+    console.log('  Calculated Recipient Member Object:', recipientMember); // Log the object
+    console.log('  Calculated Recipient ID (string):', recipientId); // Log the extracted ID
 
-//  const recipientId = chat.members.find((id) => id !== user?.data?._id);
+    const getUser = async () => {
+      if (!recipientId) {
+        console.log(
+          'useFetchRecipientUser: No valid recipientId found after extraction, skipping fetch.'
+        );
+        setError('Recipient user ID could not be determined.');
+        return;
+      }
 
-//  if (!recipientId) return;
-  
-//   console.log("👤 Current user._id:", user?.data?._id);
-//   console.log("📨 Chat members:", chat?.members);
-//   console.log("🎯 Recipient ID found:", recipientId);
+      setIsLoading(true);
 
+      const response = await getRequest(`${baseUrl}/users/${recipientId}`);
 
+      setIsLoading(false); // Set loading to false regardless of success or error
 
-//   const getUser = async () => {
-//     const response = await getRequest(`${baseUrl}/users/${recipientId}`);
+      if (response.error) {
+        setError(response.error);
+        setRecipientUser(null);
+      } else {
+        console.log('useFetchRecipientUser: Successfully fetched recipient user:', response.data);
+        setRecipientUser(response.data);
+      }
+    };
 
-//      // if (!recipientId) return;
+    getUser();
+  }, [chat, user]);
 
+  // useEffect(() => {
+  //   if (!chat || !user?.data?._id) return;
 
-//     //const response = await getRequest(`${baseUrl}/users/${recipientId}`);
-//     if (response.error) {
-//       setError(response.error);
-//     } else {
-//       setRecipientUser(response.data);
-//     }
-//   };
+  //   const currentUserId = user?.data?._id || user?._id;
+  //     if (!currentUserId) return;
 
-//   getUser();
-// }, [chat, user]);
+  //  const recipientId = chat.members.find((id) => id !== user?.data?._id);
 
+  //  if (!recipientId) return;
 
-  return { recipientUser };
+  //   console.log("👤 Current user._id:", user?.data?._id);
+  //   console.log("📨 Chat members:", chat?.members);
+  //   console.log("🎯 Recipient ID found:", recipientId);
+
+  //   const getUser = async () => {
+  //     const response = await getRequest(`${baseUrl}/users/${recipientId}`);
+
+  //      // if (!recipientId) return;
+
+  //     //const response = await getRequest(`${baseUrl}/users/${recipientId}`);
+  //     if (response.error) {
+  //       setError(response.error);
+  //     } else {
+  //       setRecipientUser(response.data);
+  //     }
+  //   };
+
+  //   getUser();
+  // }, [chat, user]);
+
+  return { recipientUser, error, isLoading };
 };
 
 export default useFetchRecipientUser;
-
-
 
 // import { useEffect, useState } from 'react';
 // import { baseUrl, getRequest } from '../utils/services';
@@ -83,7 +118,6 @@ export default useFetchRecipientUser;
 //  //   console.log('Recipient ID:', recipientId);
 
 //   useEffect(() => {
-     
 
 // console.log("👤 Current user._id:", user?._id);
 //     console.log("📨 Chat members:", chat?.members);

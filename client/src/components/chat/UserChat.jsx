@@ -1,8 +1,15 @@
+// const UserChat = ()=>{
+//   return (<>UserChat</>)
+// }
+
+// export default UserChat;
 import { Stack } from 'react-bootstrap';
 import { useFetchRecipientUser } from '../../hooks/useFetchRecipient';
 import avatar from '../../assets/avatar.png';
 
 const UserChat = ({ chat, user }) => {
+  //console.log('UserChat received - chat:', chat); // Add this
+  //console.log('UserChat received - user:', user); // Add this
   const { recipientUser } = useFetchRecipientUser(chat, user);
   console.log('Recipient User:', recipientUser);
   return (
