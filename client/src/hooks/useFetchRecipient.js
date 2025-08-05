@@ -35,11 +35,11 @@ export const useFetchRecipientUser = (chat, user) => {
 
     const recipientId = recipientMember?._id;
 
-    console.log('useFetchRecipientUser Debug:');
-    console.log('  Current User ID:', currentUserId);
-    console.log('  Chat Members (full objects):', chat.members);
-    console.log('  Calculated Recipient Member Object:', recipientMember); // Log the object
-    console.log('  Calculated Recipient ID (string):', recipientId); // Log the extracted ID
+    //console.log('useFetchRecipientUser Debug:');
+    // console.log('  Current User ID:', currentUserId);
+    // console.log('  Chat Members (full objects):', chat.members);
+    // console.log('  Calculated Recipient Member Object:', recipientMember); // Log the object
+    // console.log('  Calculated Recipient ID (string):', recipientId); // Log the extracted ID
 
     const getUser = async () => {
       if (!recipientId) {
@@ -60,7 +60,7 @@ export const useFetchRecipientUser = (chat, user) => {
         setError(response.error);
         setRecipientUser(null);
       } else {
-        console.log('useFetchRecipientUser: Successfully fetched recipient user:', response.data);
+        // console.log('useFetchRecipientUser: Successfully fetched recipient user:', response.data);
         setRecipientUser(response.data);
       }
     };

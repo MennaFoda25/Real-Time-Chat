@@ -1,29 +1,45 @@
-// import { useContext } from 'react';
-// import { ChatContext } from '../../context/ChatContext';
-// import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
+import { ChatContext } from '../../context/ChatContext';
+import { AuthContext } from '../../context/AuthContext';
 
-// const PotentialChats = () => {
-//   const { user } = useContext(AuthContext);
-//   const { potentialChats, createChat } = useContext(ChatContext);
+const PotentialChats = () => {
+  const { user } = useContext(AuthContext);
+  const { potentialChats, createChat } = useContext(ChatContext);
+  // console.log('Potential Chats:', potentialChats);
 
-//   return <>Start Chat</>
-// //   return (
-// //     <>
-// //     <div className="all-users">
-// //   {potentialChats?.length > 0 ? (
-// //     potentialChats.map((u, index) => (
-// //       <div className="single-user" key={u._id} onClick={() => createChat(user?.data?._id || user?._id, u._id)}>
-// //         {u.name}
-// //         <span className="user-online"></span>
-// //       </div>
-// //     ))
-// //   ) : (
-// //     <p>No users available</p>
-// //   )}
-// // </div>
+  return (
+    <>
+      <div className="all-users">
+        {potentialChats &&
+          potentialChats.map((u, index) => {
+            return (
+              <div className="single-user" key={index} onClick={() => createChat(user._id, u._id)}>
+                {u.name}
+                <span className="user-online"></span>
+              </div>
+            );
+          })}
+      </div>
+    </>
+  );
+  //return <>Start Chat</>
+  //    return (
+  //      <>
+  //      <div className="all-users">
+  //    {potentialChats?.length > 0 ? (
+  //     potentialChats.map((u, index) => (
+  //       <div className="single-user" key={u._id} onClick={() => createChat(user?.data?._id || user?._id, u._id)}>
+  //         {u.name}
+  //         <span className="user-online"></span>
+  //       </div>
+  //     ))
+  //   ) : (
+  //     <p>No users available</p>
+  //    )}
+  //  </div>
 
-// //     </>
-// //   );
-// };
+  //      </>
+  //   );
+};
 
-// export default PotentialChats;
+export default PotentialChats;
