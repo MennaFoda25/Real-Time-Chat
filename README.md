@@ -21,8 +21,8 @@ It supports multiple chat rooms, private messaging, typing indicators, and live 
 
 🌐 REST API integration using the native fetch API
 
-🛠 Tech Stack
-Frontend
+## 🛠 Tech Stack
+### Frontend
 React (Vite)
 
 Socket.IO Client
@@ -31,7 +31,7 @@ Native Fetch API for REST requests
 
 CSS Modules / Styled Components for styling
 
-Backend
+### Backend
 Node.js + Express
 
 Socket.IO for real-time events
@@ -40,14 +40,14 @@ MongoDB + Mongoose
 
 dotenv for environment variables
 
-⚙️ Installation & Setup:
+## ⚙️ Installation & Setup:
 
-1️⃣ Clone the repository
+### 1️⃣ Clone the repository
 
 git clone https://github.com/MennaFoda25/Real-Time-Chat.git
 cd Real-Time-Chat
 
-2️⃣ Backend Setup
+### 2️⃣ Backend Setup
 
 cd server
 npm install
@@ -62,7 +62,7 @@ Start the backend:
 
 npm run dev
 
-3️⃣ Frontend Setup (Vite + React)
+### 3️⃣ Frontend Setup (Vite + React)
 
 cd ../client
 npm install
