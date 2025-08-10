@@ -1,4 +1,5 @@
 💬 Real-Time Chat Application
+
 A real-time chat platform built with React (Vite), Node.js, Express, Socket.IO, and MongoDB.
 It supports multiple chat rooms, private messaging, typing indicators, and live updates, all with a fast and responsive UI.
 🚀 Features
