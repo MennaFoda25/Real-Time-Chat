@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react';
+
+import { useContext, useState, useRef,useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import useFetchRecipientUser from '../../hooks/useFetchRecipient';
@@ -14,10 +15,12 @@ const ChatBox = () => {
     isMessagesLoading,
     messagesError,
     sendTextMessageError,
+    isSendingMessage,
     sendTextMessage,
   } = useContext(ChatContext);
   const { recipientUser } = useFetchRecipientUser(currentChat, user);
   const [textMessage, setTextMessage] = useState('');
+  const scroll = useRef();
 
   const sender = user?.data?._id ? user.data : user;
   const currentLoggedInUserId = sender?._id;
@@ -26,6 +29,10 @@ const ChatBox = () => {
   console.log('ChatBox: Current Logged-in User ID:', currentLoggedInUserId); // Add this for debugging
 
   console.log('text', textMessage);
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   if (!recipientUser)
     return <p style={{ textAlign: 'center', width: '100%' }}>No conversation yet...</p>;
@@ -58,6 +65,7 @@ const ChatBox = () => {
                   ? 'message self align-self-end flex-grow-0'
                   : 'message align-self-start flex-grow-0'
               }`}
+              ref={scroll}
             >
               <span>{message.text}</span>
               <span className="message-footer">
@@ -76,10 +84,12 @@ const ChatBox = () => {
         />
         <button
           className="send-btn"
+          disabled={isSendingMessage}
           onClick={async () => {
-            // Make onClick async to await sendTextMessage
-            await sendTextMessage(textMessage, sender, currentChat._id);
-            setTextMessage(''); // Clear input after sending
+            if (currentChat?._id && sender?._id && textMessage) {
+              await sendTextMessage(textMessage, sender, currentChat._id);
+              setTextMessage('');
+            }
           }}
         >
           <svg

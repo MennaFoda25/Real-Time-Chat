@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const chatSchema = new mongoose.Schema(
   {
-   members: [
-  {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User',
-  },
-],
+    members: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -15,7 +15,7 @@ const chatSchema = new mongoose.Schema(
 chatSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'members',
-    select: 'name  email ',
+    select: 'name email',
   });
   next();
 });

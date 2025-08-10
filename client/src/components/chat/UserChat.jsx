@@ -1,44 +1,8 @@
-// import { Stack } from 'react-bootstrap';
-// import { useFetchRecipientUser } from '../../hooks/useFetchRecipient';
-// import avatar from '../../assets/avatar.png';
-// import { useEffect } from "react";
-
-// const UserChat = ({ chat, user }) => {
-//   //console.log('UserChat received - chat:', chat); // Add this
-//   //console.log('UserChat received - user:', user); // Add this
-//   const { recipientUser , error, isLoading} = useFetchRecipientUser(chat, user);
-//   //console.log('Recipient User:', recipientUser);
-//   return (
-//     <Stack
-//       direction="horizontal"
-//       gap={3}
-//       className="user-card align-items-center p-2 justify-content-between"
-//       role="button"
-//     >
-//       <div className="d-flex">
-//         <div className="me-2">
-//           <img src={avatar} height="35px" />
-//         </div>
-//         <div className="text-content">
-//           <div className="name">{recipientUser?.name}</div>
-//           <div className="text">Text Message</div>
-//         </div>
-//       </div>
-//       <div className="d-flex flex-column align-items-end">
-//         <div className="date">12/12/2025</div>
-//         <div className="this-user-notifications">2</div>
-//         <span className="user-online"></span>
-//       </div>
-//     </Stack>
-//   );
-// };
-
-// export default UserChat;
-
-// src/components/chat/UserChat.jsx
 import { Stack } from 'react-bootstrap';
 import { useFetchRecipientUser } from '../../hooks/useFetchRecipient';
 import avatar from '../../assets/avatar.png';
+ import { useContext } from 'react';
+import { ChatContext } from '../../context/ChatContext';
 
 // Remove onSelectChat and isSelected from props here
 const UserChat = ({ chat, user }) => {
@@ -49,6 +13,10 @@ const UserChat = ({ chat, user }) => {
     isLoading: recipientLoading,
   } = useFetchRecipientUser(chat, user);
 
+  const {onlineUser} = useContext(ChatContext)
+
+  const isOnline = onlineUser?.some((user)=> user?.userId === recipientUser?._id)
+
   if (recipientLoading) {
     return <p>Loading recipient...</p>;
   }
@@ -58,6 +26,7 @@ const UserChat = ({ chat, user }) => {
   if (!recipientUser) {
     return <p>Recipient not found.</p>;
   }
+ // console.log("recipient", recipientUser)
 
   return (
     <Stack
@@ -79,7 +48,7 @@ const UserChat = ({ chat, user }) => {
       <div className="d-flex flex-column align-items-end">
         <div className="date">12/12/2025</div>
         <div className="this-user-notifications">2</div>
-        <span className="user-online"></span>
+        <span className={isOnline? "user-online" : ""}></span>
       </div>
     </Stack>
   );

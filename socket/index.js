@@ -1,11 +1,12 @@
+ //const { disconnect } = require("mongoose");
 const { Server } = require("socket.io");
 
-const io = new Server({ cors:" http://localhost:5173"});
+ const io = new Server({ cors:" http://localhost:5173"});
 
 let onlineUser = []
 
-io.on("connection", (socket) => {
-    console.log("new connection", socket.id)
+ io.on("connection", (socket) => {
+     console.log("new connection", socket.id)
 
     socket.on("addNewUser", (userId)=>{
        !onlineUser.some((user)=> user.userId === userId) &&
@@ -16,7 +17,21 @@ io.on("connection", (socket) => {
             console.log("onlineUsers", onlineUser)
             io.emit("getOnlineUsers",onlineUser)
 
-    })
-});
+     })
 
-io.listen(3000);
+     socket.on("sendMessage", (message)=>{
+        const user = onlineUser.find(user => user.userId === message.recipientId)
+
+        if(user){
+            io.to(user.socketId).emit("getMessage", message)
+        }
+     })
+
+     socket.on("disconnect",()=>{
+        onlineUser = onlineUser.filter(user => user.socketId !== socket.id)
+                    io.emit("getOnlineUsers",onlineUser)
+
+     })
+ });
+
+ io.listen(3000);

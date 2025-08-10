@@ -4,9 +4,12 @@ const ApiError = require('../utils/apiError');
 
 //Cretae chat
 
-exports.createChat = asyncHandler(async (req, res) => {
+exports.createChat = asyncHandler(async (req, res, next) => {
   const { firstId, secondId } = req.body;
 
+  if (!firstId || !secondId) {
+    return next(new ApiError('Both firstId and secondId are required to create a chat.', 400));
+  }
   let chat = await Chat.findOne({
     members: { $all: [firstId, secondId] },
   });
@@ -29,7 +32,7 @@ exports.getUserChats = asyncHandler(async (req, res, next) => {
   if (!chats) {
     return next(new ApiError(`No chats for this id : ${req.params.userId}`, 404));
   }
-  res.status(200).json( chats );
+  res.status(200).json(chats);
 });
 //get specific Chat
 
